@@ -588,65 +588,127 @@ def create_resource_types(raml_data, root):
     child_res_type_names = []
 
     for res in resource_types:
-        for k, v in list(iteritems(res)):
-            if isinstance(v, dict):
-                if "type" in list(iterkeys(v)):
-                    child_res_type_objects.append({k: v})
-                    child_res_type_names.append(k)
+        if isinstance(res, str):
+            for k, v in list(iteritems(resource_types[res])):
+                if isinstance(v, dict):
+                    if "type" in list(iterkeys(v)):
+                        child_res_type_objects.append({k: v})
+                        child_res_type_names.append(k)
 
+                    else:
+                        for meth in list(iterkeys(v)):
+                            if meth in accepted_methods:
+                                method_data = _get(v, meth, {})
+                                resource = wrap(k, method_data, meth, v)
+                                resource_type_objects.append(resource)
                 else:
-                    for meth in list(iterkeys(v)):
-                        if meth in accepted_methods:
-                            method_data = _get(v, meth, {})
-                            resource = wrap(k, method_data, meth, v)
-                            resource_type_objects.append(resource)
-            else:
-                meth = None
-                resource = wrap(k, {}, meth, v)
-                resource_type_objects.append(resource)
+                    meth = None
+                    resource = wrap(k, {}, meth, v)
+                    resource_type_objects.append(resource)
 
-    while child_res_type_objects:
-        child = child_res_type_objects.pop()
-        name = list(iterkeys(child))[0]
-        data = list(itervalues(child))[0]
-        parent = data.get("type")
-        if parent in child_res_type_names:
-            continue
-        p_data = [r for r in resource_types if list(iterkeys(r))[0] == parent]
-        p_data = p_data[0].get(parent)
-        res_data = _get_data_union(data, p_data)
+            while child_res_type_objects:
+                child = child_res_type_objects.pop()
+                name = list(iterkeys(child))[0]
+                data = list(itervalues(child))[0]
+                parent = data.get("type")
+                if parent in child_res_type_names:
+                    continue
+                p_data = [r for r in resource_types if list(iterkeys(r))[0] == parent]
+                p_data = p_data[0].get(parent)
+                res_data = _get_data_union(data, p_data)
 
-        for meth in list(iterkeys(res_data)):
-            if meth in accepted_methods:
-                method_data = _get(res_data, meth, {})
-                comb_data = dict(list(iteritems(method_data)) +
-                                 list(iteritems(res_data)))
-                resource = ResourceTypeNode(
-                    name=name,
-                    raw=res_data,
-                    root=root,
-                    headers=headers(method_data),
-                    body=body(method_data),
-                    responses=responses(method_data),
-                    uri_params=uri_params(comb_data),
-                    base_uri_params=base_uri_params(comb_data),
-                    query_params=query_params(method_data),
-                    form_params=form_params(method_data),
-                    media_type=_get(v, "mediaType"),
-                    desc=description(),
-                    type=_get(res_data, "type"),
-                    method=method(meth),
-                    usage=_get(res_data, "usage"),
-                    optional=optional(),
-                    is_=is_(res_data),
-                    traits=traits(res_data),
-                    secured_by=secured_by(res_data),
-                    security_schemes=security_schemes_(res_data),
-                    display_name=_get(method_data, "displayName", name),
-                    protocols=protocols(res_data),
-                    errors=root.errors
-                )
-                resource_type_objects.append(resource)
+                for meth in list(iterkeys(res_data)):
+                    if meth in accepted_methods:
+                        method_data = _get(res_data, meth, {})
+                        comb_data = dict(list(iteritems(method_data)) +
+                                         list(iteritems(res_data)))
+                        resource = ResourceTypeNode(
+                            name=name,
+                            raw=res_data,
+                            root=root,
+                            headers=headers(method_data),
+                            body=body(method_data),
+                            responses=responses(method_data),
+                            uri_params=uri_params(comb_data),
+                            base_uri_params=base_uri_params(comb_data),
+                            query_params=query_params(method_data),
+                            form_params=form_params(method_data),
+                            media_type=_get(v, "mediaType"),
+                            desc=description(),
+                            type=_get(res_data, "type"),
+                            method=method(meth),
+                            usage=_get(res_data, "usage"),
+                            optional=optional(),
+                            is_=is_(res_data),
+                            traits=traits(res_data),
+                            secured_by=secured_by(res_data),
+                            security_schemes=security_schemes_(res_data),
+                            display_name=_get(method_data, "displayName", name),
+                            protocols=protocols(res_data),
+                            errors=root.errors
+                        )
+                        resource_type_objects.append(resource)
+
+        else:
+            for k, v in list(iteritems(res)):
+                if isinstance(v, dict):
+                    if "type" in list(iterkeys(v)):
+                        child_res_type_objects.append({k: v})
+                        child_res_type_names.append(k)
+
+                    else:
+                        for meth in list(iterkeys(v)):
+                            if meth in accepted_methods:
+                                method_data = _get(v, meth, {})
+                                resource = wrap(k, method_data, meth, v)
+                                resource_type_objects.append(resource)
+                else:
+                    meth = None
+                    resource = wrap(k, {}, meth, v)
+                    resource_type_objects.append(resource)
+
+        while child_res_type_objects:
+            child = child_res_type_objects.pop()
+            name = list(iterkeys(child))[0]
+            data = list(itervalues(child))[0]
+            parent = data.get("type")
+            if parent in child_res_type_names:
+                continue
+            p_data = [r for r in resource_types if list(iterkeys(r))[0] == parent]
+            p_data = p_data[0].get(parent)
+            res_data = _get_data_union(data, p_data)
+
+            for meth in list(iterkeys(res_data)):
+                if meth in accepted_methods:
+                    method_data = _get(res_data, meth, {})
+                    comb_data = dict(list(iteritems(method_data)) +
+                                     list(iteritems(res_data)))
+                    resource = ResourceTypeNode(
+                        name=name,
+                        raw=res_data,
+                        root=root,
+                        headers=headers(method_data),
+                        body=body(method_data),
+                        responses=responses(method_data),
+                        uri_params=uri_params(comb_data),
+                        base_uri_params=base_uri_params(comb_data),
+                        query_params=query_params(method_data),
+                        form_params=form_params(method_data),
+                        media_type=_get(v, "mediaType"),
+                        desc=description(),
+                        type=_get(res_data, "type"),
+                        method=method(meth),
+                        usage=_get(res_data, "usage"),
+                        optional=optional(),
+                        is_=is_(res_data),
+                        traits=traits(res_data),
+                        secured_by=secured_by(res_data),
+                        security_schemes=security_schemes_(res_data),
+                        display_name=_get(method_data, "displayName", name),
+                        protocols=protocols(res_data),
+                        errors=root.errors
+                    )
+                    resource_type_objects.append(resource)
 
     return resource_type_objects or None
 

@@ -369,8 +369,12 @@ def create_traits(raml_data, root):
     traits = _get(raml_data, "traits", [])
     trait_objects = []
     for trait in traits:
-        name = list(iterkeys(trait))[0]
-        data = list(itervalues(trait))[0]
+        if type(trait) is str:
+            name = trait
+            data = traits[trait]
+        else:
+            name = list(iterkeys(trait))[0]
+            data = list(itervalues(trait))[0]
         trait_objects.append(wrap(name, data))
     return trait_objects or None
 

@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand  # NOQA
 
 
-NAME = "ramlfications"
+NAME = "grapi-ramlfications"
 META_PATH = os.path.join("ramlfications", "__init__.py")
 
 

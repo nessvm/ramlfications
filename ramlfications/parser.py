@@ -12,7 +12,7 @@ from .config import MEDIA_TYPES
 from .errors import InvalidRAMLError
 from .parameters import (
     Documentation, Header, Body, Response, URIParameter, QueryParameter,
-    FormParameter, SecurityScheme
+    FormParameter, SecurityScheme, Property
 )
 from .parser_utils import (
     security_schemes
@@ -174,6 +174,26 @@ def create_sec_schemes(raml_data, root):
             _headers.extend(h)
         return _headers
 
+    def properties(property_data):
+        _properties = []
+        property_data = _get(property_data, "properties", {})
+        for k, v in list(iteritems(property_data)):
+            p = _create_base_param_obj(
+                {k, v}, Property, root.config, root.errors
+            )
+            _properties.extend(p)
+        return _properties
+
+        # _headers = []
+        # header_data = _get(header_data, "headers", {})
+        # for k, v in list(iteritems(header_data)):
+        #     h = _create_base_param_obj({k: v},
+        #                                Header,
+        #                                root.config,
+        #                                root.errors)
+        #     _headers.extend(h)
+        # return _headers
+
     def body(body_data):
         body_data = _get(body_data, "body", {})
         _body = []
@@ -183,7 +203,7 @@ def create_sec_schemes(raml_data, root):
                 raw=v,
                 schema=load_schema(_get(v, "schema")),
                 example=load_schema(_get(v, "example")),
-                form_params=_get(v, "formParameters"),
+                properties=properties(_get(v, "properties", {})),
                 config=root.config,
                 errors=root.errors
             )
@@ -858,7 +878,7 @@ def create_node(name, raw_data, method, parent, root):
                 raw={k: v},
                 schema=load_schema(_get(v, "schema")),
                 example=load_schema(_get(v, "example")),
-                form_params=_get(v, "formParameters"),
+                properties=_get(v, "properties"),
                 config=root.config,
                 errors=root.errors
             )
@@ -923,7 +943,7 @@ def create_node(name, raw_data, method, parent, root):
                         raw=raw,
                         schema=_schema,
                         example=_example,
-                        form_params=None,
+                        properties=None,
                         config=root.config,
                         errors=root.errors
                     ))

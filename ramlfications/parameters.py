@@ -275,8 +275,8 @@ class Body(object):
     raw         = attr.ib(repr=False, init=True,
                           validator=attr.validators.instance_of(dict))
     schema      = attr.ib(repr=False, validator=body_schema)
-    example     = attr.ib(repr=False, validator=body_example)
-    form_params = attr.ib(repr=False, validator=body_form)
+    example = attr.ib(repr=False, validator=body_example)
+    properties = attr.ib(repr=False, validator=body_properties)
     config      = attr.ib(repr=False,
                           validator=attr.validators.instance_of(dict))
     errors      = attr.ib(repr=False)
@@ -292,6 +292,17 @@ class Body(object):
                     attr = getattr(param, n, None)
                     setattr(self, n, attr)
 
+
+@attr.s
+class Property(object):
+    """
+    Property of a type or request/response
+    """
+    name = attr.ib()
+    type = attr.ib()
+    required = attr.ib()
+    description = attr.ib()
+    binding_definition = attr.ib()
 
 @attr.s
 class Response(object):

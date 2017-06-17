@@ -289,16 +289,16 @@ def body_example(inst, attr, value):
 
 
 @collecterrors
-def body_form(inst, attr, value):
+def body_properties(inst, attr, value):
     """
     Assert ``formParameters`` are defined if body has a form-related
     MIME type.
     """
-    form_types = ["multipart/form-data", "application/x-www-form-urlencoded"]
-    if inst.mime_type in form_types and not value:
-        msg = "Body with mime_type '{0}' requires formParameters.".format(
-            inst.mime_type)
-        raise InvalidParameterError(msg, "body")
+
+    # if inst.mime_type in form_types and not value:
+    #     msg = "Body with mime_type '{0}' requires formParameters.".format(
+    #         inst.mime_type)
+    #     raise InvalidParameterError(msg, "body")
 
 
 @collecterrors

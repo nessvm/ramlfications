@@ -64,7 +64,7 @@ def assigned_traits(inst, attr, value):
             msg = ("Trying to assign traits that are not defined"
                    "in the root of the API.")
             raise InvalidResourceNodeError(msg)
-        trait_names = [list(iterkeys(i))[0] for i in traits]
+        trait_names = [i for i in traits]
         if not isinstance(value, list):
             msg = ("The assigned traits, '{0}', needs to be either an array "
                    "of strings or dictionaries mapping parameter values to "
@@ -113,7 +113,7 @@ def assigned_res_type(inst, attr, value):
             raise InvalidResourceNodeError(msg)
 
         res_types = inst.root.raw.get("resourceTypes", {})
-        res_type_names = [list(iterkeys(i))[0] for i in res_types]
+        res_type_names = [i for i in res_types]
         if isinstance(value, list):
             item = value[0]  # NOCOV
         elif isinstance(value, dict):

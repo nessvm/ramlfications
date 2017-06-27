@@ -26,7 +26,7 @@ HTTP_METHODS = [
 ]
 HTTP_OPTIONAL = [m + "?" for m in HTTP_METHODS].extend(HTTP_METHODS)
 
-RAML_VERSIONS = ["0.8"]
+RAML_VERSIONS = ["0.8", "1.0"]
 PROTOCOLS = ["HTTP", "HTTPS"]
 MEDIA_TYPES = _load_media_types()
 AUTH_SCHEMES = [

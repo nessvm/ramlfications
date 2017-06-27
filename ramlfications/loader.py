@@ -81,7 +81,7 @@ class RAMLLoader(object):
         if isinstance(raml, string_types):
             header = raml.split('\n', 1)[0]
         else:
-            header = raml.readline().strip()
+            header = '#' + raml.readline().strip().split('#')[1]
         if not header.startswith(RAMLHEADER):
             msg = "Error raml file shall start with {0} but got {1}".format(
                 RAMLHEADER, header)

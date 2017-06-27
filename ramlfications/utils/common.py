@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import datetime
 import re
 
 try:
@@ -65,7 +66,12 @@ def substitute_parameters(data, param_data):
     Returns named parameter ``data`` with ``<<parameter>>`` substituted
     with the desired ``param_data``
     """
-    json_data = json.dumps(data)
+    def datetime_handler(o):
+        if isinstance(o, datetime.datetime) or isinstance(o, datetime.date):
+            return o.isoformat()
+        raise TypeError("Unknown Type")
+
+    json_data = json.dumps(data, default=datetime_handler)
     for key, value in list(iteritems(param_data)):
         json_data = __replace_str_attr(key, value, json_data)
     if isinstance(json_data, str):

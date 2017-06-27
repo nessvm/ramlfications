@@ -3,4 +3,11 @@
 
 from __future__ import absolute_import, division, print_function
 
-# TODO
+import attr
+from .base import BaseNode
+
+
+@attr.s
+class TypeNode(BaseNode):
+    name = attr.ib()
+
